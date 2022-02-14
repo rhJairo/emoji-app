@@ -20,3 +20,22 @@ body {
 .emoji {
   font-size: calc(10px + 5vmin);
 }
+
+.wordContainer{
+  display: flex;
+  flex-direction: row;
+}
+
+.charCell {
+  padding: 1rem 1.5rem 1rem 1.5rem;
+  margin-left: 0.5rem;
+  font-size: 2rem;
+  border-radius: 6px;
+}
+
+.activeChar{
+  background-color: #61dafb;
+}
+.inactiveChar{
+  background-color: #3f3f3f;
+}
