@@ -1,0 +1,22 @@
+body { 
+  margin: 0px;
+  background-color: #282c34;
+}
+
+.App {
+  text-align: center;
+  min-height: 50vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+.emoji {
+  font-size: calc(10px + 5vmin);
+}
