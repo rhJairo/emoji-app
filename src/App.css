@@ -26,6 +26,7 @@ body {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+  justify-content: center;
 }
 
 .charCell {
@@ -45,4 +46,22 @@ body {
 
 .spaceChar{
   background-color: #282c34;
+}
+
+.keyCell{
+  padding: 0.5rem 0.5rem 0.5rem 0.5rem;
+  margin: 0 0.2rem 0.5rem 0;
+  font-size: 1rem;
+  border-radius: 6px;
+  background-color: #bdbdbd;
+}
+
+.keyCell:active{
+  background-color: #F29A46;
+}
+
+.keyboard {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+
 }
