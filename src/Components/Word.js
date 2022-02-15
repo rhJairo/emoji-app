@@ -1,21 +1,16 @@
 import React from 'react'
 
-function Word(props){
-    let charArr = [...props.word]
-    charArr = charArr.map(e => {
-        return{
-            value: e,
-            isActive: false
-        }
-    })
 
-    let myWord = charArr.map(e => {
+function Word(props){
+    
+    let myWord = props.word.map(e => {
         return(
-            <div>
-                <h3 className={`charCell ${e.isActive ? 'activeChar':'inactiveChar'}`}>{e.isActive ? e.value.toUpperCase() : '_'}</h3>
-            </div>
+            <h3 key={e.id} className={`charCell ${e.value === ' ' ? 'spaceChar' : e.isActive ? 'activeChar':'inactiveChar'}`}>
+                {e.isActive ? e.value.toUpperCase() : e.value === ' ' ? ' ' : '_'}
+            </h3>
         )
     })
+
     return(
         <div className='wordContainer'>
             {myWord}
