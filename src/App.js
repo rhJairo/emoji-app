@@ -7,9 +7,8 @@ import {nanoid} from 'nanoid'
 import './App.css';
 
 function App() {
-  let name = "The Thing"
 
-  function setupWord(){
+  function setupWord(name){
     let charArr = [...name.toLowerCase()]
     charArr = charArr.map(e => {
       return{
@@ -18,11 +17,27 @@ function App() {
         isActive: e === ' ' ? true : false
       }
     })
-    return charArr
+    setWord(charArr)
   }
   
-  const [word, setWord] = React.useState(setupWord)
+  const [word, setWord] = React.useState([])
   const [result, setResult] = React.useState(false)
+
+  React.useEffect(()=>{
+    async function getMovie(){
+      const res = await fetch(`https://data-imdb1.p.rapidapi.com/movie/id/tt0086250/`, {
+        "method": "GET",
+        "headers": {
+          "x-rapidapi-host": "data-imdb1.p.rapidapi.com",
+          "x-rapidapi-key": "8e5e9caf64msh5e26025472ee355p129957jsn0b06fee5b71c"
+        }
+      })
+      const data = await res.json()
+      setupWord(data.results.title)
+    }
+    getMovie()
+  },[])
+
 
   React.useEffect(()=>{
     function haveWon(){
@@ -35,7 +50,7 @@ function App() {
     }
 
     function handleKeypress(e){
-      if(name.toLowerCase().includes(e.key.toLowerCase())){
+      if(word.find(o => o.value === e.key)){
         setWord(arr => {
           let newArr = arr.map(obj => 
             obj.value === e.key.toLowerCase() ? {...obj, isActive: true}: obj)
@@ -49,7 +64,18 @@ function App() {
     return function cleanup(){
       document.removeEventListener('keydown', handleKeypress)
     }
-  }, [name, word])
+  }, [word])
+
+  function handleClick(e){
+    
+    if(word.find(o => o.value === e.toLowerCase())){
+      setWord(arr => {
+        let newArr = arr.map(obj => 
+          obj.value === e.toLowerCase() ? {...obj, isActive: true}: obj)
+        return newArr
+      })
+    }
+  }
 
   let kbrdStr = 'QWERTYUIOPASDFGHJKLZXCVBNM'
   kbrdStr = [...kbrdStr]
@@ -60,25 +86,13 @@ function App() {
       }
   })
 
-  function handleClick(e){
-    console.log('clicked')
-    if(name.toLowerCase().includes(e.toLowerCase())){
-      setWord(arr => {
-        let newArr = arr.map(obj => 
-          obj.value === e.toLowerCase() ? {...obj, isActive: true}: obj)
-        return newArr
-      })
-    }
-  }
-
   const keyboard = kbrdStr.map(k => {
     return (
         <Keys key={k.id} pressed={() => handleClick(k.value)} char={k.value}/>
     )
   })
 
-
-
+  console.log(word)
   return (
     <div className="App">
       <Emojis />
