@@ -1,9 +1,20 @@
 import React from 'react';
 
-function Emojis(){
+function Emojis(props){
     return(
         <div>
-            <p className='emoji'>Emojis</p>
+            <div>
+                <p className='emoji-text'>Your clues</p>
+            </div>
+            <div>
+                <p className='emoji-text'>Plot: {props.plot}</p>
+            </div>
+            <div>
+                <p className='emoji-text'>Genres: {props.genres}</p>
+            </div>
+            <div>
+                <p className='emoji'>Emojis</p>
+            </div>
         </div>
     )
 }

@@ -8,6 +8,9 @@ import './App.css';
 
 function App() {
 
+  const [word, setWord] = React.useState([{id: '', value: ' ', isActive: false}])
+  const [result, setResult] = React.useState({moviePlot:'',movieGenres:[], moviePoster:'', winned: false})
+  
   function setupWord(name){
     let charArr = [...name.toLowerCase()]
     charArr = charArr.map(e => {
@@ -19,13 +22,14 @@ function App() {
     })
     setWord(charArr)
   }
-  
-  const [word, setWord] = React.useState([])
-  const [result, setResult] = React.useState(false)
 
   React.useEffect(()=>{
-    async function getMovie(){
-      const res = await fetch(`https://data-imdb1.p.rapidapi.com/movie/id/tt0086250/`, {
+    const genrePool = ['Crime','Drama','Horror','Action','Thriller','Animation','Comedy','War',
+        'Adventure','Fantasy','Family','Sci-Fi','Sport','Mystery']
+    let genre = genrePool[Math.floor(Math.random() * genrePool.length - 1)]
+
+    async function getMovie(movieId){
+      const res = await fetch(`https://data-imdb1.p.rapidapi.com/movie/id/${movieId}/`, {
         "method": "GET",
         "headers": {
           "x-rapidapi-host": "data-imdb1.p.rapidapi.com",
@@ -33,9 +37,39 @@ function App() {
         }
       })
       const data = await res.json()
+      console.log('movie info:',data)
+      const poster = data.results.image_url
+      const plot = data.results.plot
+      const genres = data.results.gen.map(obj => obj.genre)
+      setResult(prevRes => {
+        return {
+          ...prevRes,
+          movieGenres: genres,
+          moviePlot: plot,
+          moviePoster: poster
+        }
+      })
       setupWord(data.results.title)
     }
-    getMovie()
+
+    function generateMovie(){
+      async function getMoviePool(movieGenre){
+        const res = await fetch(`https://data-imdb1.p.rapidapi.com/movie/byGen/${movieGenre}/?page_size=50`, {
+          "method": "GET",
+          "headers": {
+            "x-rapidapi-host": "data-imdb1.p.rapidapi.com",
+            "x-rapidapi-key": "8e5e9caf64msh5e26025472ee355p129957jsn0b06fee5b71c"
+          }
+        })
+        const data = await res.json()
+        const movie = data.results[Math.floor(Math.random() * data.results.length - 1)]
+        console.log('chosen movie', movie)
+        getMovie(movie.imdb_id)
+      }
+      console.log(genre)
+      getMoviePool(genre)
+    }
+    generateMovie()
   },[])
 
 
@@ -58,7 +92,12 @@ function App() {
         })
       }
     }
-    setResult(haveWon())
+    setResult(prevRes => {
+      return{
+        ...prevRes,
+        winned: haveWon()
+      }
+    })
 
     document.addEventListener('keydown', handleKeypress)
     return function cleanup(){
@@ -92,12 +131,11 @@ function App() {
     )
   })
 
-  console.log(word)
   return (
     <div className="App">
-      <Emojis />
+      <Emojis plot={result.moviePlot} genres={result.movieGenres} />
       <Word word={word} />
-      <Result reset={setupWord} win={result}/>
+      <Result reset={setupWord} movieURL={result.moviePoster} win={result.winned} />
       <div className='keyboard'>
         {keyboard}
       </div>
@@ -108,8 +146,6 @@ function App() {
 export default App;
 
 // - make lose condition 6 lifes or so
-// - make words responsive
-// - import api info
 // - make emoji obj dictionary
 // - make info overlay
 // - make footer 
