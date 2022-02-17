@@ -9,7 +9,7 @@ import './App.css';
 function App() {
 
   const [word, setWord] = React.useState([{id: '', value: ' ', isActive: false}])
-  const [result, setResult] = React.useState({moviePlot:'',movieGenres:[], moviePoster:'', winned: false})
+  const [result, setResult] = React.useState({livesLeft:'11',moviePlot:'',movieGenres:[], moviePoster:'', winned: false})
   
   function setupWord(name){
     let charArr = [...name.toLowerCase()]
@@ -17,7 +17,7 @@ function App() {
       return{
         id: nanoid(),
         value: e,
-        isActive: e === ' ' ? true : false
+        isActive: !(/[a-zA-Z]/).test(e) ? true : false
       }
     })
     setWord(charArr)
@@ -26,7 +26,7 @@ function App() {
   React.useEffect(()=>{
     const genrePool = ['Crime','Drama','Horror','Action','Thriller','Animation','Comedy','War',
         'Adventure','Fantasy','Family','Sci-Fi','Sport','Mystery']
-    let genre = genrePool[Math.floor(Math.random() * genrePool.length - 1)]
+    let genre = genrePool[Math.floor(Math.random() * (genrePool.length - 1))]
 
     async function getMovie(movieId){
       const res = await fetch(`https://data-imdb1.p.rapidapi.com/movie/id/${movieId}/`, {
@@ -90,6 +90,13 @@ function App() {
             obj.value === e.key.toLowerCase() ? {...obj, isActive: true}: obj)
           return newArr
         })
+      }else{
+        setResult(res => {
+          return {
+            ...res,
+            livesLeft: res.livesLeft--
+          }
+        })
       }
     }
     setResult(prevRes => {
@@ -113,32 +120,69 @@ function App() {
           obj.value === e.toLowerCase() ? {...obj, isActive: true}: obj)
         return newArr
       })
+    } else{
+      setResult(res => {
+        return {
+          ...res,
+          livesLeft: res.livesLeft--
+        }
+      })
     }
   }
 
-  let kbrdStr = 'QWERTYUIOPASDFGHJKLZXCVBNM'
-  kbrdStr = [...kbrdStr]
-  kbrdStr = kbrdStr.map(k => {
+  
+
+  function createKeyboard(){
+    let kbrdStr = 'QWERTYUIOPASDFGHJKLZXCVBNM'
+    kbrdStr = [...kbrdStr]
+    kbrdStr = kbrdStr.map(k => {
       return {
         id: nanoid(),
         value: k
       }
-  })
-
-  const keyboard = kbrdStr.map(k => {
+    })
+    let row1,row2,row3 
+    row1 = row2 = row3 = []
+    for (let i = 0; i < 26; i++){
+      if(i<10){
+        row1 = [...row1, <Keys key={kbrdStr[i].id} pressed={() => handleClick(kbrdStr[i].value)} char={kbrdStr[i].value}/>]
+      }else if(i>9 && i<19){
+        row2 = [...row2, <Keys key={kbrdStr[i].id} pressed={() => handleClick(kbrdStr[i].value)} char={kbrdStr[i].value}/>]
+      }else if(i>18 && i<26){
+        row3 = [...row3, <Keys key={kbrdStr[i].id} pressed={() => handleClick(kbrdStr[i].value)} char={kbrdStr[i].value}/>]
+      }
+    }
+    
+    console.log(row1)
     return (
-        <Keys key={k.id} pressed={() => handleClick(k.value)} char={k.value}/>
+      <div className='keyboard'>
+        <div className='keyboard--row'>
+          {row1}
+        </div>
+        <div className='keyboard--row'>
+          {row2}
+        </div>
+        <div className='keyboard--row'>
+          {row3}
+        </div>
+      </div>
     )
-  })
+  }
+  const keyboard = createKeyboard()
+  
+  // kbrdStr.map(k => {
+  //   return (
+  //       <Keys key={k.id} pressed={() => handleClick(k.value)} char={k.value}/>
+  //   )
+  // })
 
   return (
     <div className="App">
-      <Emojis plot={result.moviePlot} genres={result.movieGenres} />
+      <Emojis lives={result.livesLeft} plot={result.moviePlot} genres={result.movieGenres} />
       <Word word={word} />
       <Result reset={setupWord} movieURL={result.moviePoster} win={result.winned} />
-      <div className='keyboard'>
-        {keyboard}
-      </div>
+      {!result.winned && keyboard}
+      
     </div>
   );
 }

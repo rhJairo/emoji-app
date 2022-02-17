@@ -5,8 +5,8 @@ function Word(props){
     
     let myWord = props.word.map(e => {
         return(
-            <h3 key={e.id} className={`charCell ${e.value === ' ' ? 'spaceChar' : e.isActive ? 'activeChar':'inactiveChar'}`}>
-                {e.isActive ? e.value.toUpperCase() : e.value === ' ' ? ' ' : '_'}
+            <h3 key={e.id} className={`charCell ${!(/[a-zA-Z]/).test(e.value) ? 'spaceChar' : e.isActive ? 'activeChar':'inactiveChar'}`}>
+                {e.isActive ? e.value.toUpperCase() : (/[a-zA-Z]/).test(e.value) ? '_' : e.value}
             </h3>
         )
     })

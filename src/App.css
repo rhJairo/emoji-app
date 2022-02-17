@@ -1,6 +1,6 @@
 body { 
   margin: 0px;
-  background-color: #282c34;
+  background-color: rgb(0, 20, 39);
 }
 
 .App {
@@ -9,7 +9,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  align-content: flex-end;
+  align-content: flex-start;
   justify-content: center;
   color: white;
 }
@@ -19,7 +19,7 @@ body {
 }
 
 .emoji {
-  font-size: calc(10px + 10vmin);
+  font-size: calc(10px + 8vmax);
   margin: 1rem 0 0.5rem 0;
 }
 
@@ -39,13 +39,13 @@ body {
 
 .charCell {
   padding: 0.5vmin 1vmin 0.5vmin 1vmin;
-  margin: auto 0 auto 0.5rem;
+  margin: auto 0 1rem 0.5rem;
   font-size: 5vmin;
   border-radius: 6px;
 }
 
 .activeChar{
-  background-color: #61dafb;
+  background-color: #4ec5e6;
 }
 
 .inactiveChar{
@@ -53,13 +53,13 @@ body {
 }
 
 .spaceChar{
-  background-color: #282c34;
+  background-color: rgb(0, 20, 39);
 }
 
 .keyCell{
   font-size: 1rem;
   border-radius: 6px;
-  background-color: #bdbdbd;
+  background-color: #9c9c9c;
   user-select: none;
 }
 
@@ -68,14 +68,22 @@ body {
 }
 
 .keyboard {
-  display: flex;
   margin-top: auto;
-  flex-direction: row;
-  flex-wrap: wrap;
 }
 
-.keyboard > div{
+.keyboard--row {
+  
+  width: 95vmin;
+  display: flex;
+  flex-direction: row;
+}
+
+.keyboard--row > div{
   margin: 0 0.1rem 0.5rem 0;
   flex-grow: 1;
   width: 9%;
+}
+
+.victory-text{
+  color: rgb(0, 207, 111);
 }
